@@ -1,0 +1,184 @@
+<html>
+<head>
+
+  <style>
+   @font-face {
+      font-family: "GeoSans";
+      src: url("assests/GeosansLight.ttf");
+    }
+    html{ color:#fff; background:#000; font-family:"GeoSans" }
+    body{
+      font-size:30px;
+    }
+
+
+    a{
+      color: #fff;
+    }
+    a:hover{
+      color: #fff;
+      font-weight:bold;
+    }
+    a:visited{
+      color:#dfd;
+    }
+    #README{
+      position:absolute;
+      z-index:999;
+      background:rgba( 0,0,0,.3);
+      margin: 100px;
+      padding: 20px;
+      border: 1px solid white;
+    }
+    #renderer{
+
+      position:fixed;
+      top:0px;
+      left:0px;
+
+    }
+  </style>
+
+</head>
+
+<body>
+  <div id="add">this text is added just so GeoSans gets loaded in time</div>
+  <script src="lib/three.min.js"></script>
+  <script src="lib/ObjectControls.js"></script>
+  <script src="lib/TrackballControls.js"></script>
+  <script src="Slider.js"></script>
+  <script src="GUI3D.js"></script>
+  <script>
+
+
+    var scene, camera, renderer;
+
+    var objectControls;
+    var objects = [];
+
+    var uniforms = { 
+      value1:{ type:"f" , value:4 , constraints:[1,10] },
+      gqKJAxxjs:{ type:"f" , value:6 , constraints:[1,10] },
+      value3:{ type:"f" , value:8 , constraints:[1,10] },
+      value4:{ type:"f" , value:2 , constraints:[1,10] }
+    }
+
+    var clock, time = 0;
+
+    init();
+    animate();
+
+    function init(){
+
+
+      /*
+
+         Default threejs stuff!
+
+      */
+      scene = new THREE.Scene();
+
+      var ar = window.innerWidth / window.innerHeight;
+
+      camera = new THREE.PerspectiveCamera( 75, ar , 1, 1000 );
+      camera.position.z = 100;
+
+      renderer = new THREE.WebGLRenderer();
+      renderer.setPixelRatio( 2 );
+      
+      renderer.setSize( window.innerWidth, window.innerHeight );
+
+      document.body.appendChild( renderer.domElement );
+      renderer.domElement.id = "renderer"
+
+      controls = new THREE.TrackballControls( camera );
+
+      clock = new THREE.Clock();
+
+
+      var light = new THREE.DirectionalLight( 0xffaaaa , .3 );
+      light.position.set( 1 , 0 , 1 );
+      scene.add( light );
+
+      var light = new THREE.DirectionalLight( 0xaaffaa , .3 );
+      light.position.set( -1 , 1 , 1 );
+      scene.add( light );
+
+      var light = new THREE.DirectionalLight( 0xaaaaff , .3 );
+      light.position.set( 0 , -1 , 1 );
+      scene.add( light );
+
+
+      /*
+
+         Object Control stuff!!!!
+
+      */ 
+
+      textCreator = new TextCreator( 50 );
+      objectControls = new ObjectControls( camera );
+      //slider = new Slider( 'SLIDER' , uniform , objectControls );
+      //slider.scene.position.x = 50;
+      //scene.add( slider.scene );
+
+      gui3D = new GUI3D( "YES" , objectControls , {
+        
+        knobMat: new THREE.MeshPhongMaterial({
+          color:0xffc0ee,
+          specular: 0xffffff
+        }),
+        fillMat: new THREE.MeshPhongMaterial({
+          color:0xc0ffee,
+          specular: 0xffffff
+        }),
+        fullMat: new THREE.MeshPhongMaterial({
+          color:0x44ffc0,
+          specular: 0xffffff
+        }),
+        bgMat: new THREE.MeshPhongMaterial({
+          color:0xffaa44,
+          specular: 0xffffff
+        }),
+
+        sliderWidth: 100,
+        sliderHeight: 10,
+        sliderSpacing: 20,
+        sliderDepth: 3
+      });
+      gui3D.createUniformSliders( uniforms );
+      gui3D.position.y = gui3D.height / 2;
+      gui3D.position.x = 20;
+      scene.add( gui3D.scene );
+
+
+    }
+
+    function animate(){
+
+      requestAnimationFrame( animate );
+      
+      objectControls.update();
+     //////////////// controls.update();
+
+      time += clock.getDelta();
+
+      camera.position.y = Math.sin( time * .1 ) * 20;
+      camera.position.x = Math.sin( time * .31 ) * 20;
+      camera.position.z = Math.sin( time * .51 ) * 20 + 80;
+      camera.lookAt( scene.position );
+
+      renderer.render( scene , camera );
+  
+
+
+    }
+
+  </script>
+
+
+ 
+
+
+
+</body>
+<html>
